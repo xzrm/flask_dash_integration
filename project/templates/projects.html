@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Projects</h1>
+<a class="btn btn-success" href="projects/new"> Add Project</a>
+<hr>
+<ul class="list-group">
+    {% for project in projects %}
+        <li class="list-group-item"><a href='projects/{{project.id}}'>{{project.title}}</a></li>
+    {% endfor %}
+    {% endblock %}
+</ul>
