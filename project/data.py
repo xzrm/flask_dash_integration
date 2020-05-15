@@ -45,19 +45,19 @@ class SingleStepData:
             disp_var = match.group('rdv')
             self.displacement_norm.append(float(disp_var))
             if match.group('rdv_check') == 'TRUE':
-                self.governing_norm["displacement_norm"] = float(disp_var)
+                self.governing_norm["displacement norm"] = float(disp_var)
 
         elif key == 'rel_energy_var':
             energy_var = match.group('rev')
             self.energy_norm.append(float(energy_var))
             if match.group('rev_check') == 'TRUE':
-                self.governing_norm["energy_norm"] = float(energy_var)
+                self.governing_norm["energy norm"] = float(energy_var)
 
         elif key == 'rel_force_var':
             force_var = match.group('rfv')
             self.force_norm.append(float(force_var))
             if match.group('rfv_check') == 'TRUE':
-                self.governing_norm["force_norm"] = float(force_var)
+                self.governing_norm["force norm"] = float(force_var)
 
         elif key == 'rel_residu_var':
             residu_var = match.group('rrv')
@@ -131,8 +131,8 @@ def parse_global_data(text):
                 single_step_obj = SingleStepData(step_number)
                 step_objects.append(single_step_obj)
 
-            # if "START STEPS" in line:
-            #     single_step_obj.is_startstep()
+            if "START STEPS" in line:
+                single_step_obj.is_startstep()
 
             if any(key == rx for rx in ['rel_displ_var', 'rel_energy_var', 'rel_force_var', 'rel_residu_var', 'conv', 'load_case']):
                 single_step_obj.add_result(key, match)
@@ -175,25 +175,27 @@ class Convergence:
                 else:
                     self.itera_conv_pairs.append((iteration_count, last_variation))
 
-                self.convergence_check(step_obj)
+                # self.convergence_check(step_obj)
 
         if not self.full_step_itera:
             print("The are no results for this norm")
 
-    def convergence_check(self, step_obj):
-        last_variation = getattr(step_obj, self.norm)[-1]
-        if(step_obj.converged):
-            try:
-                last_variation = step_obj.governing_norm[self.norm]
-                self.converged_norm_this.append((step_obj.total_iterations, last_variation))
-            except KeyError:
-                self.converged_norm_other.append((step_obj.total_iterations, last_variation))
-        else:
-            self.itera_unconv_pairs.append((step_obj.total_iterations, last_variation))
+    # def convergence_check(self, step_obj):
+    #     last_variation = getattr(step_obj, self.norm)[-1]
+    #     if(step_obj.converged):
+    #         try:
+    #             last_variation = step_obj.governing_norm[self.norm]
+    #             self.converged_norm_this.append((step_obj.total_iterations, last_variation))
+    #         except KeyError:
+    #             self.converged_norm_other.append((step_obj.total_iterations, last_variation))
+    #     else:
+    #         self.itera_unconv_pairs.append((step_obj.total_iterations, last_variation))
 
     def variations(self):
         self.iterations_steps = [getattr(step_obj, self.norm) for step_obj in self.step_objects]
         self.all_iterations = list(itertools.chain(*self.iterations_steps))
+
+
 
 
 # def unpack_values(func):
@@ -214,7 +216,7 @@ def filter_empty_steps(step_objects, norm):
 #     return step_objects, convergence
 
 
-def get_data(text_list, norm, tolerance):
+def get_data(text_list):
     
     # step_objects = filter_empty_steps(parse_global_data(text_list), norm)
     step_objects = parse_global_data(text_list)
@@ -229,6 +231,8 @@ def get_data(text_list, norm, tolerance):
             if len(variations) == 0:
                 setattr(step_object, n, [0.0] * max_length)
 
-    convergence = Convergence(step_objects, norm, tolerance)
+    return step_objects
 
-    return step_objects, convergence
+
+
+
