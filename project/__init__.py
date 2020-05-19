@@ -2,12 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_admin import Admin
+from project.config import Config
 
 server = Flask(__name__)
+server.config.from_object(Config)
 
-server.secret_key = "secret"
-server.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:334hprkT@localhost/dash_projects_dev"
-server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(server, session_options={
     'expire_on_commit': False
@@ -30,14 +29,22 @@ from .admin import *
 
 ###dash apps
 
-from werkzeug.middleware.dispatcher import DispatcherMiddleware
+# from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from .app_dash1 import dash_app1
 # from .app_dash2 import app as dash_app2
 
 
-app_dash = DispatcherMiddleware(server, {
-    '/dash1': dash_app1.server
-    # '/app2': dash_app2.server,
-})
+# app_dash = DispatcherMiddleware(server, {
+#     '/dash': dash_app1.server
+#     # '/app2': dash_app2.server,
+# })
 
-from project import routes
+from project.users.routes import users
+from project.projects.routes import projects
+from project.main.routes import main
+
+server.register_blueprint(users)
+server.register_blueprint(projects)
+server.register_blueprint(main)
+
+# from project import routes
