@@ -5,7 +5,7 @@ from flask_admin import Admin
 from project.config import ProductionConfig, DevelopmentConfig
 
 server = Flask(__name__)
-server.config.from_object(DevelopmentConfig)
+server.config.from_object(ProductionConfig)
 
 
 db = SQLAlchemy(server, session_options={
