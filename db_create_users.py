@@ -1,4 +1,4 @@
-from app import db
+from project import server
 from project.models import *
 
 # insert data
