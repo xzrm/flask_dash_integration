@@ -2,7 +2,7 @@ from project import db
 from project.models import *
 
 # insert data
-db.drop_all()
+#db.drop_all()
 db.create_all()
 
 user_role = Role(name='user')
