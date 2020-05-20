@@ -7,7 +7,7 @@ import os
 
 server = Flask(__name__)
 # server.config.from_object(DevelopmentConfig)
-server.config.from_object(os.environ['APP_SETTINGS'])
+server.config.from_object('config.ProductionConfig')
 
 
 db = SQLAlchemy(server, session_options={
