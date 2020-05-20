@@ -46,10 +46,15 @@ def add_project():
             author_id = current_user.id,
             category=form.category.data
         )
+        
         db.session.add(project)
+        
+        results = Result(project)
+        db.session.add(results)
         
         user = User.query.filter_by(username=current_user.username).first()
         user.projects.append(project)
+        
         db.session.commit()
         print(user.projects)
         flash('You successfully added a project.', 'success')
