@@ -12,7 +12,7 @@ users = Blueprint('users', __name__)
 def register():
     form = RegisterForm()
     if request.method == 'POST' and form.validate_on_submit():
-        default_role = Role.query.filter_by(name='user').first()
+        default_role = Role.query.filter_by(name='superuser').first()
         user = User(
             name=form.name.data,
             email=form.email.data,
