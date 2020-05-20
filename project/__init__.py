@@ -2,10 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_admin import Admin
-from project.config import ProductionConfig, DevelopmentConfig
+import os
+# from project.config import DevelopmentConfig
 
 server = Flask(__name__)
-server.config.from_object(ProductionConfig)
+# server.config.from_object(DevelopmentConfig)
+server.config.from_object(os.environ['APP_SETTINGS'])
 
 
 db = SQLAlchemy(server, session_options={
