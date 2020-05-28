@@ -1,15 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Projects</h1>
-<a class="btn btn-success" href="projects/new"> Add Project</a>
-<hr>
-<ul class="list-group">
-    {% for project in projects %}
-    <li class="list-group-item">
-        <a href="{{ url_for('projects.project', project_id=project.id)}}">{{project.title}}</a>
 
-    </li>
+<legend class="border-bottom mb-4">Projects</legend>
+<a class="btn btn-outline-info" href="projects/new"> Add Project</a>
+<hr>
+<div class="list-group">
+    {% for project in projects %}
+    <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">
+                <a href="{{ url_for('projects.project', project_id=project.id)}}">
+                    {{project.title}}
+                </a>
+            </h5>
+            <small>{{project.create_date.strftime('%Y-%m-%d')}}</small>
+        </div>
+        <p class="mb-1">{{project.description}}</p>
+        <small>Category: {{project.category}}</small>
+    </div>
     {% endfor %}
     {% endblock %}
-</ul>
+</div>

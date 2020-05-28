@@ -15,10 +15,24 @@ def projects_all():
     return render_template('projects.html', projects=user_projects)
 
 
-@projects.route('/convergence/')
-@login_required
+# @projects.route('/convergence/')
+# @login_required
+# def render_chart():
+#     pass
+#     # return redirect('/dash')
+    
+@projects.route('/rendering/')
 def render_chart():
-    return redirect('/dash')
+    project_id = session["project_id"]
+    project = Project.query.filter_by(id=project_id).first()
+    category = project.category
+    if category == 'convergence behaviour':
+        return redirect('/convergence')
+    elif category == 'response':
+        return redirect('/response')
+    else:
+        return redirect(url_for('projects.project', project_id=project_id))
+    # return redirect('/dash')
 
 @projects.route('/projects/<int:project_id>/render')
 @login_required
@@ -70,6 +84,7 @@ def update_project(project_id):
     if project.author_id != current_user.id:
         abort(403)
     form = ProjectForm()
+    form.category.choices = [project.category]
     if form.validate_on_submit():
         project.title = form.title.data
         project.description = form.description.data

@@ -2,45 +2,52 @@
 
 {% block content %}
 <div>
-    <div>
-        <h1>{{project.title}}</h1>
-    </div>
-    <div>
-        <p>{{project.description}}</p>
-        <p>
-            <a href="{{ url_for('projects.render_project', project_id=project.id)}}">Results</a>
-        </p>
-        <p>
-            <a href="{{url_for('projects.update_project', project_id=project.id)}}">
-                Update
-            </a>
-            <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteModal">
-                Delete
-            </button>
-
-        </p>
-
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Delete Project?</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+    <div class="card">
+        <div class="card-header">
+            <legend class="border-bottom mb-4">{{project.title}}</legend>
+            <small>Created on: {{project.create_date.strftime('%Y-%m-%d')}}</small>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{project.description}}</p>
+            <div class="row py-2">
+                <div class="col">
+                    <a href="{{ url_for('projects.render_project', project_id=project.id)}}"
+                        class="btn btn-outline-info btn-sm mx-1">
+                        Results
+                    </a>
+                    <a href="{{url_for('projects.update_project', project_id=project.id)}}"
+                        class="btn btn-outline-info btn-sm mx-1">
+                        Update
+                    </a>
+                    <button type="button" class="btn  btn-outline-danger btn-sm mx-1 float-right" data-toggle="modal"
+                        data-target="#deleteModal">
+                        Delete
                     </button>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <form action="{{ url_for('projects.delete_project', project_id=project.id) }}" method="POST">
-                        <input class="btn btn-danger" type="submit" value="Delete">
-                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Delete Project?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                <form action="{{ url_for('projects.delete_project', project_id=project.id) }}" method="POST">
+                    <input class="btn btn-danger btn-sm" type="submit" value="Delete">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 
 {% endblock %}

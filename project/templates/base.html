@@ -21,69 +21,65 @@
 </head>
 
 <body>
-  <div class="container">
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="{{ url_for('main.index') }}">Projects</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+  <header class="site-header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-color">
+      <div class="container">
+        <a class="navbar-brand mr-4" href="{{ url_for('main.index') }}">Projects</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/about">About</a>
-          </li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">About</a>
+            </li>
 
-          {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('projects.projects_all') }}">My projects</a>
-          </li>
-          {% else %}
-          <li>
-            <div></div>
-          </li>
-          {% endif %}
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.docs')}}">Docs</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="{{url_for('main.contact')}}">Contact</a>
+            </li>
 
 
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          {% if current_user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="/account">My account</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
-          {% endif %}
-        </ul>
 
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('projects.projects_all') }}">My projects</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/account">My account</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="/register">Register</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login">Login</a>
+            </li>
+            {% endif %}
+          </ul>
 
+        </div>
       </div>
     </nav>
+  </header>
 
-
-
-
-
-
-
-
+  <div class="container">
     {% include 'includes/_messages.html'%}
     {% block content %}{% endblock %}
   </div>
-
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
     integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

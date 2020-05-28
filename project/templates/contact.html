@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <legend class="border-bottom mb-4">Contact</legend>
+
+
+    {% if success %}
+    <p>Your message has been sent. Thank you.</p>
+    {% else %}
+    <p>Do you have questions or remarks? Feel free to contact us. </p>
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group col-md-6 px-0">
+                {{ form.name.label(class="form-control-label") }}
+                {% if form.name.errors %}
+                {{ form.name(class="form-control form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.name(class="form-control form-control") }}
+                {% endif %}
+
+            </div>
+            <div class="form-group col-md-6 px-0">
+                {{ form.email.label(class="form-control-label") }}
+                {% if form.email.errors %}
+                {{ form.email(class="form-control form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email(class="form-control form-control") }}
+                {% endif %}
+            </div>
+            <div class="form-group col-md-6 px-0">
+                {{ form.subject.label(class="form-control-label") }}
+                {% if form.subject.errors %}
+                {{ form.subject(class="form-control form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.subject.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.subject(class="form-control form-control") }}
+                {% endif %}
+            </div>
+            <div class="form-group col-md-8 px-0">
+                {{ form.message.label(class="form-control-label") }}
+                {% if form.message.errors %}
+                {{ form.message(class="form-control form-control is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.message.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.message(class="form-control form-control") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

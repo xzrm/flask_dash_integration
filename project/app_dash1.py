@@ -18,11 +18,11 @@ from flask import request, session
 
 import json
 
-from .parser import *
+from .parser_convergence import *
 from .models import *
 import pandas as pd
 import numpy as np
-from .phases import *
+from .text_utils import *
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -86,17 +86,17 @@ def draw_graph(df, norm, html_id):
 
     
     fig.add_trace(go.Scatter(x=df_loc['cum sum'][mask_converged_steps_this], 
-                             y=df_loc['last variation'][mask_converged_steps_this],
-                             mode='markers',
-                             name='converged steps current norm',
-                             marker=dict(
-                                color='lime',
-                                size=6,
-                                line=dict(
-                                    color='black',
-                                    width=1
-                                ))
-                             ))
+                            y=df_loc['last variation'][mask_converged_steps_this],
+                            mode='markers',
+                            name='converged steps current norm',
+                            marker=dict(
+                               color='lime',
+                               size=6,
+                               line=dict(
+                                   color='black',
+                                   width=1
+                               ))
+                            ))
     
     mask_converged_steps_other = (df_loc['converged'] == True) & df['governing norm'].apply(lambda x: norm not in x.keys())
     
@@ -301,7 +301,7 @@ def cur_user(input1):
               [State('upload-data', 'filename')])
 def update_output(content, name):
     if current_user.is_authenticated:
-        print("Plotting")
+
         if content is not None:
             children = [
                 parse_contents(content, name)

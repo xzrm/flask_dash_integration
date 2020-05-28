@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_admin import Admin
+from flask_mail import Mail
 import os
 # from project.config import DevelopmentConfig
 
@@ -17,10 +18,14 @@ db = SQLAlchemy(server, session_options={
 
 
 login_manager = LoginManager()
+login_manager.login_view = 'users.login'
+login_manager.login_message_category = 'info'
 login_manager.init_app(server)
 
 admin = Admin(server)
 
+mail = Mail()
+mail.init_app(server)
 
 from .models import User
 @login_manager.user_loader
@@ -33,7 +38,7 @@ from .admin import *
 
 # from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from .app_dash1 import dash_app1
-# from .app_dash2 import app as dash_app2
+from .app_dash2 import dash_app2
 
 
 # app_dash = DispatcherMiddleware(server, {

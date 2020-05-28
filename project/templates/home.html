@@ -2,11 +2,11 @@
 
 {% block content %}
   <div class="jumbotron text-center">
-    <h1>Welcome To ProjectsApp</h1>
-    <p class="lead">This application is built to simplify communication between engineers</p>
+    <h2>Welcome</h2>
+    <p class="lead">To use the content of this website you need to register first</p>
     {% if not current_user.is_authenticated %}
-      <a href="/register/" class="btn btn-primary btn-lg">Register</a>
-      <a href="/login" class="btn btn-success btn-lg">Login</a>
+      <a href="/register/" class="btn btn-primary">Register</a>
+      <a href="/login" class="btn btn-outline-info">Login</a>
     {% endif %}
   </div>
 {% endblock %}
