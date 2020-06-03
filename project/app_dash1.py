@@ -72,6 +72,8 @@ def draw_graph(df, norm, html_id):
     df_loc['cum sum'] = df['step length'].cumsum()
     df_loc['last variation'] = df[norm].apply(lambda x: x[-1])
     
+    print("columns", df_loc.columns)
+
     
     fig = go.Figure()
     
@@ -81,13 +83,15 @@ def draw_graph(df, norm, html_id):
                    y='variations', 
                    title=norm.title())
     
+
+
     
     mask_converged_steps_this = (df_loc['converged'] == True) & df['governing norm'].apply(lambda x: norm in x.keys())
 
     
-    fig.add_trace(go.Scatter(x=df_loc['cum sum'][mask_converged_steps_this], 
-                            y=df_loc['last variation'][mask_converged_steps_this],
-                            mode='markers',
+    fig.add_trace(go.Scatter(x=df_loc['cum sum'], 
+                            y=df_loc['last variation'],
+                            mode='markers+text',
                             name='converged steps current norm',
                             marker=dict(
                                color='lime',
@@ -95,7 +99,9 @@ def draw_graph(df, norm, html_id):
                                line=dict(
                                    color='black',
                                    width=1
-                               ))
+                               )),
+                            text=df_loc["step number"],
+                            textposition="top right",
                             ))
     
     mask_converged_steps_other = (df_loc['converged'] == True) & df['governing norm'].apply(lambda x: norm not in x.keys())
@@ -111,7 +117,7 @@ def draw_graph(df, norm, html_id):
                                 line=dict(
                                     color='black',
                                     width=1
-                                ))
+                                )),
                              ))
     
     mask_unconverged_steps = (df_loc['converged'] == False)
@@ -127,7 +133,7 @@ def draw_graph(df, norm, html_id):
                                 line=dict(
                                     color='black',
                                     width=1
-                                ))
+                                )),
                              ))
     
     max_val = np.amax(all_variations)
@@ -152,7 +158,6 @@ def draw_graph(df, norm, html_id):
         dcc.Graph(
             id = html_id,
             figure = fig),
-        html.Hr(), 
         dash_table.DataTable(
             id = html_id + "_table",
             columns = [{"name": i, "id": i} for i in df_1.columns],
@@ -253,7 +258,7 @@ def update_results(obj_list, results_db):
         data['start step'] = obj.start_step
         
         data_json = json.dumps(data)
-        print(data_json)
+        # print(data_json)
         
         d = Data(data=data_json, result_id=results_db.id)
         db.session.add(d)
