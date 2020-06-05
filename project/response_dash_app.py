@@ -27,14 +27,14 @@ import numpy as np
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 
-dash_app2 = dash.Dash(
+resp_dash_app = dash.Dash(
     __name__,
     server=server,
     external_stylesheets=external_stylesheets,
     url_base_pathname='/response/'
 )
 
-dash_app2.config.suppress_callback_exceptions = True
+resp_dash_app.config.suppress_callback_exceptions = True
 
 upload_styles = {
     'width': '100%',
@@ -47,7 +47,7 @@ upload_styles = {
     'margin': '10px'
 }
 
-dash_app2.layout = html.Div([
+resp_dash_app.layout = html.Div([
     html.Div(id='user-div'),
     html.Div(['Force csv file.']),
     dcc.Upload(
@@ -133,11 +133,9 @@ def parse_outfile(contents):
     content_type, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
     return parse_global_data(decoded.decode())
-    
-    
 
 
-@dash_app2.callback(Output('output-data-upload', 'children'),
+@resp_dash_app.callback(Output('output-data-upload', 'children'),
                     [Input('upload-data-force', 'contents'),
                     Input('upload-data-displ', 'contents'),
                     Input('upload-data-outfile', 'contents')
@@ -164,12 +162,13 @@ def update_output(file_force, file_displ, file_out, name_1, name_2, name_3):
         fig.add_trace(go.Scatter(
                         x=df_global['displacements'].values, 
                         y=df_global['reactions'].values, 
-                        mode='lines+markers',
+                        mode='lines+markers+text',
                         name='Response',
                         marker=dict(
                             size=6
                         ),
-                        text=df_global['step index']
+                        text=df_global['step index'],
+                        textposition="top right",
                 )
         )
         

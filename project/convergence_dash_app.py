@@ -28,7 +28,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 
 
-dash_app1 = dash.Dash(
+conv_dash_app = dash.Dash(
     __name__,
     server=server,
     external_stylesheets=external_stylesheets,
@@ -37,7 +37,7 @@ dash_app1 = dash.Dash(
 
 
 
-dash_app1.layout = html.Div([
+conv_dash_app.layout = html.Div([
     html.Div(id='user-div'),
     dcc.Upload(
         id='upload-data',
@@ -71,10 +71,7 @@ def draw_graph(df, norm, html_id):
     df_loc['step length'] = df[norm].apply(lambda x: len(x))
     df_loc['cum sum'] = df['step length'].cumsum()
     df_loc['last variation'] = df[norm].apply(lambda x: x[-1])
-    
-    print("columns", df_loc.columns)
 
-    
     fig = go.Figure()
     
     fig = px.line(dict(iterations=list(range(1, len(all_variations) + 1)),
@@ -83,8 +80,6 @@ def draw_graph(df, norm, html_id):
                    y='variations', 
                    title=norm.title())
     
-
-
     
     mask_converged_steps_this = (df_loc['converged'] == True) & df['governing norm'].apply(lambda x: norm in x.keys())
 
@@ -138,20 +133,21 @@ def draw_graph(df, norm, html_id):
     
     max_val = np.amax(all_variations)
     min_val = np.amin(all_variations)
-    print(max_val, min_val)
     fig.update_layout(yaxis_type="log",
                       yaxis = dict(rangemode = 'tozero')
-                    #   yaxis=dict(range=[min_val, max_val]),
                     )
     
-    print(df_loc)
-    df_1 = df_loc
-    df_1[norm] = df_1[norm].apply(lambda x: str(x))
+    #copy of df_loc - modified dataframe to display results in tables
+    df_mod = df_loc
     
-    df_1["id"] = df_1.index + 1
-    df_1 = df_1.loc[:, ["id", "step number", norm,  "last variation", "step length", "cum sum"]]
-    print(df_1)
-
+    #results i.e. lists of variations have to be cast to string
+    df_mod[norm] = df_mod[norm].apply(lambda x: str(x))
+    
+    #added id column
+    df_mod["id"] = df_mod.index + 1
+    
+    #columns in modified dataframe
+    df_mod = df_mod.loc[:, ["id", "step number", norm,  "last variation", "step length", "cum sum"]]
     
     return html.Div([
         html.Hr(), 
@@ -160,8 +156,8 @@ def draw_graph(df, norm, html_id):
             figure = fig),
         dash_table.DataTable(
             id = html_id + "_table",
-            columns = [{"name": i, "id": i} for i in df_1.columns],
-            data = df_1.to_dict("records"),
+            columns = [{"name": i, "id": i} for i in df_mod.columns],
+            data = df_mod.to_dict("records"),
             style_cell={
                 'overflow': 'hidden',
                 'textOverflow': 'ellipsis',
@@ -186,7 +182,7 @@ def draw_graph(df, norm, html_id):
                         },
             tooltip_data=[
             {column: {'value': str(value), 'type': 'markdown'}
-                for column, value in row.items()} for row in df_1.to_dict('rows')
+                for column, value in row.items()} for row in df_mod.to_dict('rows')
             ], 
             tooltip_duration=None
             )
@@ -220,9 +216,9 @@ def parse_contents(contents, filename):
         
     df = pd.DataFrame(results_list)
     
-    div_1 = draw_graph(df, 'displacement norm', 'plot_displa')
-    div_2 = draw_graph(df, 'force norm', 'plot_force')
-    div_3 = draw_graph(df, 'energy norm', 'plot_energy')
+    plot_displ = draw_graph(df, 'displacement norm', 'plot_displa')
+    plot_force = draw_graph(df, 'force norm', 'plot_force')
+    plot_energy = draw_graph(df, 'energy norm', 'plot_energy')
     
     
     db.session.query(Data).delete()
@@ -240,10 +236,10 @@ def parse_contents(contents, filename):
     db.session.commit()
 
     return html.Div([
-        html.H5(filename),
-        div_1,
-        div_2,
-        div_3
+        html.H5(filename), 
+        plot_displ, 
+        plot_force,
+        plot_energy
     ])
     
 def update_results(obj_list, results_db):
@@ -258,7 +254,6 @@ def update_results(obj_list, results_db):
         data['start step'] = obj.start_step
         
         data_json = json.dumps(data)
-        # print(data_json)
         
         d = Data(data=data_json, result_id=results_db.id)
         db.session.add(d)
@@ -266,7 +261,7 @@ def update_results(obj_list, results_db):
     
 
 
-@dash_app1.callback(Output('user-div', 'children'),
+@conv_dash_app.callback(Output('user-div', 'children'),
             [Input('user-div', 'id')])
 def cur_user(input1):
 
@@ -275,10 +270,6 @@ def cur_user(input1):
         user_id = current_user.id
         user = User.query.filter(User.id == int(user_id)).first()
         project = Project.query.filter(Project.id == int(project_id)).first()
-        
-
-        r = project.results
-        print("PROJECT_DATA RESULTS", r)
 
         children = [html.H3(f'You are logged in as: {current_user.username}'),
                     html.H3(f'Your current project: {project.title}')]
@@ -289,19 +280,8 @@ def cur_user(input1):
     
     return children
 
-
-
-# @dash_app1.callback(Output('prev-results-div', 'children'),
-#             [Input('prev-results-div', 'id')])
-# def upload_results(input1):
-#     r = PROJECT_DATA.results
-#     for d in r.data:
-#         new_d = json.loads(d.data)
-#         print(new_d)
     
-
-    
-@dash_app1.callback(Output('output-data-upload', 'children'),
+@conv_dash_app.callback(Output('output-data-upload', 'children'),
               [Input('upload-data', 'contents')],
               [State('upload-data', 'filename')])
 def update_output(content, name):

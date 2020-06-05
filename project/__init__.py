@@ -37,8 +37,8 @@ from .admin import *
 ###dash apps
 
 # from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from .app_dash1 import dash_app1
-from .app_dash2 import dash_app2
+from .convergence_dash_app import conv_dash_app
+from .response_dash_app import resp_dash_app
 
 
 # app_dash = DispatcherMiddleware(server, {

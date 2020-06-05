@@ -46,8 +46,9 @@ class TestUser(BaseTestCase):
     # Ensure given password is correct after unhashing
     def test_check_password(self):
         user = User.query.filter_by(email='ad@min.com').first()
-        self.assertTrue(sha256_crypt.verify(user.password, 'haslo'))
-        self.assertFalse(sha256_crypt.verify(user.password, 'foobar'))
+        print(user)
+        self.assertTrue(sha256_crypt.verify('haslo', user.password))
+        self.assertFalse(sha256_crypt.verify('foobar', user.password,))
 
 
 class UserViewsTests(BaseTestCase):
